@@ -11,6 +11,16 @@ router.get('/heroes',(req,res)=>{
         console.log(result);
     });
 })
+//Get all heroes by id
+router.get('/heroes/:id',(req,res)=>{
+  const id = req.params.id
+  conn.query(`SELECT * FROM heroes where id= '${id}'`,(err,result)=>
+  {
+      if(err) throw err;
+      res.json(result[0])
+      console.log(result[0]);
+  });
+})
 //POST 
 
 router.post('/heroes',(req,res)=>{
