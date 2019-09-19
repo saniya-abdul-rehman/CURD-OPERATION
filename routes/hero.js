@@ -11,6 +11,8 @@ router.get('/heroes',(req,res)=>{
         console.log(result);
     });
 })
+
+
 //Get all heroes by id
 router.get('/heroes/:id',(req,res)=>{
   const id = req.params.id
@@ -61,3 +63,60 @@ router.put('/heroes/:id', (req, res) => {
 
 module.exports=router;
 
+//Get all powers
+router.get('/powers',(req,res)=>{
+  conn.query("SELECT * FROM powers",(err,result)=>
+  {
+      if(err) throw err;
+      res.json(result)
+      console.log(result);
+  });
+})
+
+//Get all powers by id
+router.get('/powers/:sp_id',(req,res)=>{
+  const sp_id = req.params.sp_id
+  conn.query(`SELECT * FROM powers where sp_id= '${sp_id}'`,(err,result)=>
+  {
+      if(err) throw err;
+      res.json(result[0])
+      console.log(result[0]);
+  });
+})
+//POST 
+
+router.post('/powers',(req,res)=>{
+    //const name =req.body.name;
+    const {sp_name}=req.body
+    conn.query(`Insert into powers(sp_name) Values('${sp_name}')`,(err,result)=>
+    {
+        if(err) throw err;
+        res.json(result)
+        console.log(result);
+    });
+})
+
+//Hero delete
+
+router.delete('/powers/:sp_id', (req, res) => {
+    let sp_id = req.params.sp_id
+    conn.query(`DELETE FROM powers Where sp_id=${sp_id}`, function (err, power, fields) {
+      if (err)
+        res.json({ msg: err.message });;
+      res.json(power)
+  
+    });
+  })
+
+//Hero update
+
+router.put('/powers/:sp_id', (req, res) => {
+    let sp_id = req.params.sp_id
+    const sp_name =req.body.sp_name;
+    conn.query(`UPDATE powers SET sp_name = '${sp_name}' WHERE sp_id = '${sp_id}'`, function (err, power) {
+      if (err)
+        res.json({ msg: err.message });;
+      res.json(power)
+  
+    });
+  })
