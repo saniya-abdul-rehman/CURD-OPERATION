@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const conn = require('../Config/Database');
 
+                               /*HEROES*/
+
 //Get all heroes
 router.get('/heroes',(req,res)=>{
     conn.query("SELECT * FROM heroes",(err,result)=>
@@ -23,7 +25,7 @@ router.get('/heroes/:id',(req,res)=>{
       console.log(result[0]);
   });
 })
-//POST 
+//POST-Insert a hero
 
 router.post('/heroes',(req,res)=>{
     //const name =req.body.name;
@@ -36,7 +38,7 @@ router.post('/heroes',(req,res)=>{
     });
 })
 
-//Hero delete
+//delete a hero
 
 router.delete('/heroes/:id', (req, res) => {
     let id = req.params.id
@@ -48,7 +50,7 @@ router.delete('/heroes/:id', (req, res) => {
     });
   })
 
-//Hero update
+//update a Hero 
 
 router.put('/heroes/:id', (req, res) => {
     let id = req.params.id
@@ -63,6 +65,7 @@ router.put('/heroes/:id', (req, res) => {
 
 module.exports=router;
 
+                                  /*POWERS*/
 //Get all powers
 router.get('/powers',(req,res)=>{
   conn.query("SELECT * FROM powers",(err,result)=>
@@ -83,7 +86,8 @@ router.get('/powers/:sp_id',(req,res)=>{
       console.log(result[0]);
   });
 })
-//POST 
+
+//POST -Insert a power
 
 router.post('/powers',(req,res)=>{
     //const name =req.body.name;
@@ -96,7 +100,7 @@ router.post('/powers',(req,res)=>{
     });
 })
 
-//Hero delete
+//delete a power 
 
 router.delete('/powers/:sp_id', (req, res) => {
     let sp_id = req.params.sp_id
@@ -108,7 +112,7 @@ router.delete('/powers/:sp_id', (req, res) => {
     });
   })
 
-//Hero update
+//update a power 
 
 router.put('/powers/:sp_id', (req, res) => {
     let sp_id = req.params.sp_id
@@ -120,3 +124,69 @@ router.put('/powers/:sp_id', (req, res) => {
   
     });
   })
+
+
+                                           /*HERO-POWERS*/
+
+//Get all heropowers
+router.get('/heropowers',(req,res)=>{
+  conn.query("SELECT * FROM heropowers",(err,result)=>
+  {
+      if(err) throw err;
+      res.json(result)
+      console.log(result);
+  });
+})
+
+//insert  power id and hero id
+router.post('/heropowers',(req,res)=>{
+  const id =req.body.id;
+  const sp_id =req.body.sp_id;
+  
+  conn.query(`Insert into heropowers(id,sp_id) Values('${id}','${sp_id}')`,(err,result)=>
+  {
+      if(err) throw err;
+      res.json(result)
+      console.log(result);
+  });
+})
+
+
+//update heroes and powers ids
+router.put('/heropowers/:hsp_id', (req, res) => {
+  let hsp_id = req.params.hsp_id
+  const id =req.body.id;
+  const sp_id =req.body.sp_id;
+  conn.query(`UPDATE heropowers SET  id = '${id}' , sp_id = '${sp_id}' WHERE hsp_id = '${hsp_id}'`, function (err, result) {
+    if (err)
+      res.json({ msg: err.message });;
+    res.json(result)
+
+  });
+})
+
+//delete heropowers
+
+router.delete('/heropowers/:hsp_id', (req, res) => {
+  let hsp_id = req.params.hsp_id
+  conn.query(`DELETE FROM heropowers Where hsp_id=${hsp_id}`, function (err, result, fields) {
+    if (err)
+      res.json({ msg: err.message });;
+    res.json(result)
+
+  });
+})
+
+
+//Get all heropowers by id
+router.get('/heropowers/:hsp_id',(req,res)=>{
+  const hsp_id = req.params.hsp_id
+  conn.query(`SELECT * FROM heropowers where hsp_id= '${hsp_id}'`,(err,result)=>
+  {
+      if(err) throw err;
+      res.json(result[0])
+      console.log(result[0]);
+  });
+})
+
+
