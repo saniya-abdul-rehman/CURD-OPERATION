@@ -138,6 +138,7 @@ router.get('/heropowers',(req,res)=>{
   });
 })
 
+
 //insert  power id and hero id
 router.post('/heropowers',(req,res)=>{
   const id =req.body.id;
@@ -178,14 +179,17 @@ router.delete('/heropowers/:hsp_id', (req, res) => {
 })
 
 
+
+
+
 //Get all heropowers by id
-router.get('/heropowers/:hsp_id',(req,res)=>{
-  const hsp_id = req.params.hsp_id
-  conn.query(`SELECT * FROM heropowers where hsp_id= '${hsp_id}'`,(err,result)=>
+router.get('/heropowers/:id',(req,res)=>{
+  const id = req.params.id
+  conn.query(`SELECT * from heroes LEFT JOIN heropowers ON heroes.id=heropowers.id LEFT JOIN powers ON powers.sp_id = heropowers.sp_id WHERE heroes.id ='${id}' `,(err,result)=>
   {
       if(err) throw err;
-      res.json(result[0])
-      console.log(result[0]);
+      res.json(result)
+      console.log(result);
   });
 })
 
