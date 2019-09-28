@@ -140,9 +140,9 @@ router.get('/heropowers',(req,res)=>{
 
 
 //insert  power id and hero id
-router.post('/heropowers',(req,res)=>{
-  const id =req.body.id;
-  const sp_id =req.body.sp_id;
+router.post('/heropowers/:id/:sp_id',(req,res)=>{
+  const id =req.params.id;
+  const sp_id =req.params.sp_id;
   
   conn.query(`Insert into heropowers(id,sp_id) Values('${id}','${sp_id}')`,(err,result)=>
   {
@@ -194,3 +194,101 @@ router.get('/heropowers/:id',(req,res)=>{
 })
 
 
+                              /*COSTUMES*/
+
+//Get all costumes
+router.get('/costumes',(req,res)=>{
+  conn.query("SELECT * FROM costumes",(err,result)=>
+  {
+      if(err) throw err;
+      res.json(result)
+      console.log(result);
+  });
+})
+
+
+//Get all costumes by id
+router.get('/costumes/:cs_id',(req,res)=>{
+const cs_id = req.params.cs_id
+conn.query(`SELECT * FROM costumes where cs_id= '${cs_id}'`,(err,result)=>
+{
+    if(err) throw err;
+    res.json(result[0])
+    console.log(result[0]);
+});
+})
+//POST-Insert a costume
+
+router.post('/costumes',(req,res)=>{
+  //const name =req.body.name;
+  const {cs_name}=req.body
+  conn.query(`Insert into costumes(cs_name) Values('${cs_name}')`,(err,result)=>
+  {
+      if(err) throw err;
+      res.json(result)
+      console.log(result);
+  });
+})
+
+//delete a costume
+
+router.delete('/costumes/:cs_id', (req, res) => {
+  let cs_id = req.params.cs_id
+  conn.query(`DELETE FROM costumes Where cs_id=${cs_id}`, function (err, costume, fields) {
+    if (err)
+      res.json({ msg: err.message });;
+    res.json(costume)
+
+  });
+})
+
+//update a Hero 
+
+router.put('/costumes/:cs_id', (req, res) => {
+  let cs_id = req.params.cs_id
+  const cs_name =req.body.cs_name;
+  conn.query(`UPDATE costumes SET cs_name = '${cs_name}' WHERE cs_id = '${cs_id}'`, function (err, costume) {
+    if (err)
+      res.json({ msg: err.message });;
+    res.json(costume)
+
+  });
+})
+
+       //HERO_COSTUMES
+
+      //get hero-costume by id
+      router.get("/herocostume/:id", function(req,res){
+      var id = req.params.id;
+      conn.query(`SELECT heroes.cs_id , costumes.cs_name  FROM costumes , heroes 
+      WHERE heroes.cs_id = costumes.cs_id AND heroes.id = '${id}'`, function(err, result){
+        
+          if(err) throw err;
+          res.json(result)
+          console.log(result);
+      });  
+    });
+    
+    
+    //Delete COSTUME FROM HERO
+    
+    //we are using PUT as HTTP VERB because we want to edit/update only ONE SINGLE column, NOT the whole row.
+  router.put('/herocostume/:id' , function(req,res){
+        let hero_id = req.params.id
+       
+        conn.query(`UPDATE heroes SET cs_id = NULL WHERE id = '${hero_id}'` , function(err , result ) {
+            if(err) throw err;
+            return res.send(result);
+        });
+    });
+    
+    // adding new costume to hero
+    router.put("/herocostume/:id/:cs_id", function (req, res) {
+        let id = req.params.id;
+        let cs_id = req.params.cs_id;
+        conn.query(`UPDATE heroes SET cs_id = '${cs_id}' WHERE id = '${id}'` , function (err, result) {
+            if (err) throw err;
+        return res.send(result);
+    });
+    });
+     
